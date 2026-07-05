@@ -29,7 +29,9 @@ jobs:
     - name: Deploy Qt Dependencies
       run: |
         cd build_win/Release
-        windeployqt KmlArcGenerator.exe
+        windeployqt --release --compiler-runtime KmlArcGenerator.exe
+        $qtBin = Split-Path (Get-Command windeployqt).Source -Parent
+        Copy-Item "$qtBin\Qt6*.dll" -Destination . -ErrorAction SilentlyContinue
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
