@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_KmlArcGenerator_FILE /Users/kimjaehyung/Desktop/C_workspace/KmlArcGenerator_Cpp/build_clean/KmlArcGenerator.app/Contents/MacOS/KmlArcGenerator)
+set(__QT_DEPLOY_TARGET_KmlArcGenerator_TYPE EXECUTABLE)

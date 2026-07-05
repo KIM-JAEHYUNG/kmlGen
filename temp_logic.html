@@ -1,0 +1,944 @@
+            <p>입력값을 변경하면 배경 지도에 실시간으로 모양이 표시됩니다.</p>
+        </header>
+
+        <div class="form-section">
+                <form id="kmlForm">
+                    <div class="card">
+                        <h2>중심점 좌표 (위경도)</h2>
+                        <div class="coord-group">
+                            <div class="input-row">
+                                <label>위도 (Latitude)</label>
+                                <div class="dms-inputs">
+                                    <input type="number" id="latD" placeholder="도" value="37" required>
+                                    <span>°</span>
+                                    <input type="number" id="latM" placeholder="분" value="33" required>
+                                    <span>'</span>
+                                    <input type="number" step="any" id="latS" placeholder="초" value="59" required>
+                                    <span>"</span>
+                                    <select id="latDir">
+                                        <option value="N">북위 (N)</option>
+                                        <option value="S">남위 (S)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-row">
+                                <label>경도 (Longitude)</label>
+                                <div class="dms-inputs">
+                                    <input type="number" id="lonD" placeholder="도" value="126" required>
+                                    <span>°</span>
+                                    <input type="number" id="lonM" placeholder="분" value="58" required>
+                                    <span>'</span>
+                                    <input type="number" step="any" id="lonS" placeholder="초" value="40" required>
+                                    <span>"</span>
+                                    <select id="lonDir">
+                                        <option value="E">동경 (E)</option>
+                                        <option value="W">서경 (W)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>부채꼴(원호) 설정</h2>
+                        <div class="settings-group">
+                            <div class="input-box">
+                                <label for="radius">반지름 (미터)</label>
+                                <input type="number" id="radius" value="500000" required>
+                            </div>
+                            <div class="input-box">
+                                <label for="startAngle">시작 방위각 (진북=0°)</label>
+                                <input type="number" id="startAngle" value="45" required>
+                            </div>
+                            <div class="input-box">
+                                <label for="endAngle">종료 방위각 (진북=0°)</label>
+                                <input type="number" id="endAngle" value="135" required>
+                            </div>
+                            <div class="input-box">
+                                <label for="sweepAngle">원호 각도 (범위)</label>
+                                <input type="number" id="sweepAngle" value="90" required>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <div class="input-box">
+                                <label for="fillColor">채우기 색상</label>
+                                <input type="color" id="fillColor" value="#3b82f6">
+                            </div>
+                            <div class="input-box">
+                                <label for="opacity">투명도 (0~100%)</label>
+                                <input type="number" id="opacity" value="50" min="0" max="100">
+                            </div>
+                            <div class="input-box">
+                                <label for="kmlName">출력 파일명</label>
+                                <input type="text" id="kmlName" value="sector">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 커스텀 마커 영역 -->
+                    <div class="card">
+                        <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                            <h2 style="margin-bottom: 0;">커스텀 마커 (목표점)</h2>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <label class="toggle-switch" title="마커 숨기기/보이기">
+                                    <input type="checkbox" id="markerVisibilityToggle" checked>
+                                    <span class="slider"></span>
+                                    <span class="toggle-label">보이기</span>
+                                </label>
+                                <label class="toggle-switch" title="클릭하여 지도에 마커 찍기 모드 활성화">
+                                    <input type="checkbox" id="markerModeToggle">
+                                    <span class="slider"></span>
+                                    <span class="toggle-label">지도에서 찍기</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="marker-add-row" style="flex-direction: column;">
+                            <div class="coord-group" style="margin-bottom: 0;">
+                                <div class="input-row">
+                                    <label style="flex: 0 0 40px; font-size: 0.8rem; margin:0;">위도</label>
+                                    <div class="dms-inputs">
+                                        <input type="number" id="mLatD" value="37" min="0" max="90"><span>°</span>
+                                        <input type="number" id="mLatM" value="33" min="0" max="59"><span>'</span>
+                                        <input type="number" id="mLatS" value="59" min="0" max="59.99" step="0.01"><span>"</span>
+                                        <select id="mLatDir">
+                                            <option value="N">북위 (N)</option>
+                                            <option value="S">남위 (S)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="input-row" style="margin-top: 0.5rem;">
+                                    <label style="flex: 0 0 40px; font-size: 0.8rem; margin:0;">경도</label>
+                                    <div class="dms-inputs">
+                                        <input type="number" id="mLonD" value="126" min="0" max="180"><span>°</span>
+                                        <input type="number" id="mLonM" value="58" min="0" max="59"><span>'</span>
+                                        <input type="number" id="mLonS" value="40" min="0" max="59.99" step="0.01"><span>"</span>
+                                        <select id="mLonDir">
+                                            <option value="E">동경 (E)</option>
+                                            <option value="W">서경 (W)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="button" id="addMarkerBtn" class="add-btn" style="margin-top: 0.8rem; width: 100%; padding: 0.6rem;">마커 추가</button>
+                            </div>
+                        </div>
+                        <div id="markerList" class="marker-list">
+                            <!-- 마커 동적 추가 영역 -->
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="viewBtn" class="generate-btn view-btn">KML 코드 보기</button>
+                        <button type="submit" id="downloadBtn" class="generate-btn">KML 파일 다운로드</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- KML 소스보기 모달창 -->
+    <div id="kmlModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h3>📄 KML 소스 코드</h3>
+            <textarea id="kmlOutput" readonly></textarea>
+            <button type="button" id="copyBtn" class="generate-btn">클립보드에 복사</button>
+        </div>
+    </div>
+
+    <!-- CORS 방지용 오프라인 세계 지도 (GeoJSON) 데이터 -->
+    <script>
+const countriesData = undefined;
+</script>
+    <script>
+const statesData = undefined;
+</script>
+    <script>
+const citiesData = undefined;
+</script>
+    <script>
+// 전역 변수
+let map;
+let arcLayer = null;
+let centerMarker = null;
+let startHandle = null;
+let endHandle = null;
+let centerLineLayer = null;
+
+// 앱 상태 (State) 관리
+let state = {
+    centerLat: 37.5665,
+    centerLon: 126.9780,
+    radius: 500000,
+    startAngle: 45,
+    endAngle: 135,
+    sweepAngle: 90,
+    hexColor: '#3b82f6',
+    opacity: 50,
+    kmlName: 'sector',
+    customMarkers: [], // 커스텀 마커 배열 [{id, lat, lon}]
+    isMarkerMode: false, // 지도 클릭으로 마커 찍기 모드
+    showMarkers: true // 마커 지도 표시 여부
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. 지도 초기화
+    map = L.map('map', { zoomControl: false }).setView([state.centerLat, state.centerLon], 5);
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // 1.5. 패널 토글 로직
+    const openBtn = document.getElementById('openPanelBtn');
+    const panelCloseBtn = document.getElementById('closePanelBtn');
+    const controlPanel = document.getElementById('controlPanel');
+
+    openBtn.addEventListener('click', () => {
+        controlPanel.classList.remove('hidden');
+        openBtn.classList.remove('show');
+        document.body.classList.remove('panel-hidden');
+    });
+
+    panelCloseBtn.addEventListener('click', () => {
+        controlPanel.classList.add('hidden');
+        openBtn.classList.add('show');
+        document.body.classList.add('panel-hidden');
+    });
+
+    // 1.6. 커스텀 마커 로직 연동
+    const markerModeToggle = document.getElementById('markerModeToggle');
+    const markerVisibilityToggle = document.getElementById('markerVisibilityToggle');
+    const markerLatInput = document.getElementById('markerLat');
+    const markerLonInput = document.getElementById('markerLon');
+    const addMarkerBtn = document.getElementById('addMarkerBtn');
+
+    if (markerModeToggle) {
+        markerModeToggle.addEventListener('change', (e) => {
+            state.isMarkerMode = e.target.checked;
+            document.getElementById('map').style.cursor = state.isMarkerMode ? 'crosshair' : '';
+        });
+    }
+
+    if (markerVisibilityToggle) {
+        markerVisibilityToggle.addEventListener('change', (e) => {
+            state.showMarkers = e.target.checked;
+            syncMarkerMap();
+        });
+    }
+
+    map.on('click', (e) => {
+        if (state.isMarkerMode) {
+            addCustomMarker(e.latlng.lat, e.latlng.lng);
+        }
+    });
+
+    if (addMarkerBtn) {
+        addMarkerBtn.addEventListener('click', () => {
+            const latD = parseFloat(document.getElementById('mLatD').value) || 0;
+            const latM = parseFloat(document.getElementById('mLatM').value) || 0;
+            const latS = parseFloat(document.getElementById('mLatS').value) || 0;
+            const latDir = document.getElementById('mLatDir').value;
+            let lat = latD + (latM / 60) + (latS / 3600);
+            if (latDir === 'S') lat = -lat;
+
+            const lonD = parseFloat(document.getElementById('mLonD').value) || 0;
+            const lonM = parseFloat(document.getElementById('mLonM').value) || 0;
+            const lonS = parseFloat(document.getElementById('mLonS').value) || 0;
+            const lonDir = document.getElementById('mLonDir').value;
+            let lon = lonD + (lonM / 60) + (lonS / 3600);
+            if (lonDir === 'W') lon = -lon;
+
+            if (!isNaN(lat) && !isNaN(lon)) {
+                addCustomMarker(lat, lon);
+            } else {
+                alert('유효한 위도와 경도를 입력해주세요.');
+            }
+        });
+    }
+
+    // 2. 기본 배경: 오프라인용 세계 국가 지도 (우선 즉시 렌더링)
+    let offlineBaseLayer = null;
+    if (typeof countriesData !== 'undefined') {
+        offlineBaseLayer = L.geoJSON(countriesData, {
+            style: {
+                color: "#475569", 
+                weight: 1.5,
+                fillColor: "#0f172a", // 오프라인용 꽉 찬 배경색
+                fillOpacity: 1
+            }
+        }).addTo(map);
+    }
+
+    // 2-1. 하이브리드 체크 (인터넷이 연결되어 위성지도가 로드 가능한지 테스트)
+    const addSatelliteLayer = (isOfflineMode) => {
+        if (offlineBaseLayer) map.removeLayer(offlineBaseLayer); // 기존 꽉 찬 배경 제거
+        
+        L.TileLayer.Offline = L.TileLayer.extend({
+            getTileUrl: function(coords) {
+                const key = `${coords.z}_${coords.x}_${coords.y}`;
+                if (typeof offlineTiles !== 'undefined' && offlineTiles[key]) {
+                    return offlineTiles[key];
+                } else if (!isOfflineMode) {
+                    return L.TileLayer.prototype.getTileUrl.call(this, coords);
+                } else {
+                    return 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // 투명 이미지
+                }
+            }
+        });
+
+        const satelliteLayer = new L.TileLayer.Offline('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 18,
+            attribution: 'Tiles &copy; Esri'
+        }).addTo(map);
+        satelliteLayer.bringToBack(); // 위성지도를 최하단으로
+
+        // 위성지도 위에 국가 경계선을 얇게(투명한 배경으로) 겹쳐서 가독성 향상
+        if (typeof countriesData !== 'undefined') {
+            L.geoJSON(countriesData, {
+                style: { color: "#ffffff", weight: 1.5, opacity: 0.4, fillOpacity: 0 }
+            }).addTo(map);
+        }
+    };
+
+    const testImg = new Image();
+    testImg.onload = () => {
+        // 온라인 상태 UI 반영
+        document.title = "KML 부채꼴 생성기 (온라인 위성 모드)";
+        const badge = document.getElementById('statusBadge');
+        if (badge) {
+            badge.textContent = "온라인 위성 모드";
+            badge.className = "badge online";
+        }
+        addSatelliteLayer(false);
+    };
+    testImg.onerror = () => {
+        // 오프라인 상태 UI 반영
+        document.title = "KML 부채꼴 생성기 (오프라인 모드)";
+        const badge = document.getElementById('statusBadge');
+        if (badge) {
+            badge.textContent = "오프라인 모드";
+            badge.className = "badge offline";
+        }
+        
+        // 오프라인 위성 타일 데이터가 포함되어 있다면 오프라인 위성 모드 활성화
+        if (typeof offlineTiles !== 'undefined') {
+            addSatelliteLayer(true);
+            if (badge) {
+                badge.textContent = "오프라인 위성 모드 (중동)";
+                badge.style.background = "#0284c7"; // 파란색 계열
+            }
+        }
+    };
+    // 캐시를 피하기 위해 타일 주소 뒤에 난수 추가
+    testImg.src = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/0/0/0?_=" + new Date().getTime();
+
+    // 2-2. 주/도/시 세부 경계선 랜더링 (공통)
+    if (typeof statesData !== 'undefined') {
+        L.geoJSON(statesData, {
+            style: { 
+                color: "#cbd5e1", // 위성지도나 다크모드 모두 잘 보이는 밝은 회색
+                weight: 0.8, 
+                dashArray: "3, 3", 
+                opacity: 0.5,
+                fillOpacity: 0 
+            }
+        }).addTo(map);
+    }
+
+    // 2-2. 주요 도시 및 수도 마커 랜더링
+    if (typeof citiesData !== 'undefined') {
+        L.geoJSON(citiesData, {
+            pointToLayer: function (feature, latlng) {
+                const isCapital = feature.properties.ADM0CAP === 1;
+                const dotColor = isCapital ? "#cbd5e1" : "#64748b"; // 노란색 대신 차분한 회색 계열로 변경
+                const radius = isCapital ? 3 : 2;
+                
+                return L.circleMarker(latlng, {
+                    radius: radius,
+                    fillColor: dotColor,
+                    color: "#0f172a",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 1
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                if (feature.properties && feature.properties.NAME) {
+                    const isCapital = feature.properties.ADM0CAP === 1;
+                    const className = isCapital ? 'city-label capital-label' : 'city-label';
+                    
+                    // 수도는 항상 이름을 띄우고, 일반 주요 도시는 마우스를 올렸을 때만 띄움
+                    layer.bindTooltip(feature.properties.NAME, {
+                        permanent: isCapital,
+                        direction: 'right',
+                        className: className,
+                        offset: [5, 0]
+                    });
+                }
+            }
+        }).addTo(map);
+    }
+
+    // 지도 빈 공간 클릭 시 중심점 이동 여부 확인
+    map.on('click', function(e) {
+        // 커스텀 마커 찍기 모드일 경우 중심점 이동 팝업을 띄우지 않습니다.
+        if (state.isMarkerMode) return;
+        
+        // 실수로 지도를 클릭하는 것을 방지하기 위해 팝업으로 이동 여부를 묻습니다.
+        if (confirm("클릭한 위치로 부채꼴 중심점을 이동하시겠습니까?")) {
+            state.centerLat = e.latlng.lat;
+            state.centerLon = e.latlng.lng;
+            updateFormFromState();
+            
+            // false를 전달하여 지도의 현재 축척(zoom)과 위치가 바뀌지 않도록 유지합니다.
+            drawOnMap(false); 
+        }
+    });
+
+    // 입력 필드 변경 시 실시간 반영
+    const inputs = document.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            updateStateFromForm(e.target.id);
+            drawOnMap(true);
+        });
+    });
+
+    // KML 텍스트 생성 헬퍼 함수
+    function getKmlString() {
+        let eAngle = state.endAngle;
+        if (eAngle < state.startAngle) eAngle += 360;
+        const points = generateArcPoints(state.centerLat, state.centerLon, state.radius, state.startAngle, eAngle);
+        
+        const midAngle = (state.startAngle + eAngle) / 2;
+        const midPos = getDestination(state.centerLat, state.centerLon, state.radius, midAngle);
+
+        return generateKML(state.kmlName, points, state.hexColor, state.opacity, {lat: state.centerLat, lon: state.centerLon}, {lat: midPos[0], lon: midPos[1]});
+    }
+
+    // KML 다운로드 처리
+    document.getElementById('kmlForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const kmlContent = getKmlString();
+        downloadKML(state.kmlName, kmlContent);
+    });
+
+    // KML 소스 보기 모달 처리
+    const modal = document.getElementById('kmlModal');
+    const viewBtn = document.getElementById('viewBtn');
+    const closeBtn = document.querySelector('.close-btn');
+    const copyBtn = document.getElementById('copyBtn');
+    const kmlOutput = document.getElementById('kmlOutput');
+
+    // 코드 보기 버튼 클릭 시
+    viewBtn.addEventListener('click', () => {
+        kmlOutput.value = getKmlString();
+        modal.classList.add('show');
+    });
+
+    // X 버튼 클릭 시
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+    });
+
+    // 모달 배경 클릭 시 닫기
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('show');
+        }
+    });
+
+    // 클립보드 복사
+    copyBtn.addEventListener('click', () => {
+        kmlOutput.select();
+        document.execCommand('copy');
+        
+        // 시각적 피드백
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ 복사 완료!';
+        copyBtn.style.background = '#10b981'; // 초록색
+        
+        setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.style.background = 'var(--accent-color)';
+        }, 2000);
+    });
+
+    // 초기 상태 동기화 및 그리기
+    updateStateFromForm();
+    drawOnMap(true);
+});
+
+// 폼 값 -> State 업데이트
+function updateStateFromForm(activeId) {
+    const latD = parseFloat(document.getElementById('latD').value) || 0;
+    const latM = parseFloat(document.getElementById('latM').value) || 0;
+    const latS = parseFloat(document.getElementById('latS').value) || 0;
+    const latDir = document.getElementById('latDir').value;
+    state.centerLat = latD + (latM / 60) + (latS / 3600);
+    if (latDir === 'S') state.centerLat = -state.centerLat;
+
+    const lonD = parseFloat(document.getElementById('lonD').value) || 0;
+    const lonM = parseFloat(document.getElementById('lonM').value) || 0;
+    const lonS = parseFloat(document.getElementById('lonS').value) || 0;
+    const lonDir = document.getElementById('lonDir').value;
+    state.centerLon = lonD + (lonM / 60) + (lonS / 3600);
+    if (lonDir === 'W') state.centerLon = -state.centerLon;
+
+    state.radius = parseFloat(document.getElementById('radius').value) || 0; 
+    state.startAngle = parseFloat(document.getElementById('startAngle').value) || 0;
+    
+    const endInput = parseFloat(document.getElementById('endAngle').value) || 0;
+    const sweepInput = parseFloat(document.getElementById('sweepAngle').value) || 0;
+
+    if (activeId === 'sweepAngle') {
+        state.sweepAngle = sweepInput;
+        state.endAngle = (state.startAngle + state.sweepAngle) % 360;
+        document.getElementById('endAngle').value = Math.round(state.endAngle * 100) / 100;
+    } else {
+        state.endAngle = endInput;
+        let diff = state.endAngle - state.startAngle;
+        if (diff < 0) diff += 360;
+        state.sweepAngle = diff;
+        const sweepEl = document.getElementById('sweepAngle');
+        if (sweepEl) sweepEl.value = Math.round(state.sweepAngle * 100) / 100;
+    }
+
+    state.hexColor = document.getElementById('fillColor').value;
+    state.opacity = parseFloat(document.getElementById('opacity').value) || 50;
+    state.kmlName = document.getElementById('kmlName').value || 'sector';
+}
+
+// State -> 폼 값 업데이트 (마우스 드래그 시 사용)
+function updateFormFromState() {
+    const latDms = ddToDms(state.centerLat, true);
+    document.getElementById('latD').value = latDms.d;
+    document.getElementById('latM').value = latDms.m;
+    document.getElementById('latS').value = latDms.s;
+    document.getElementById('latDir').value = latDms.dir;
+
+    const lonDms = ddToDms(state.centerLon, false);
+    document.getElementById('lonD').value = lonDms.d;
+    document.getElementById('lonM').value = lonDms.m;
+    document.getElementById('lonS').value = lonDms.s;
+    document.getElementById('lonDir').value = lonDms.dir;
+
+    document.getElementById('radius').value = Math.round(state.radius);
+    document.getElementById('startAngle').value = Math.round(state.startAngle * 100) / 100;
+    document.getElementById('endAngle').value = Math.round(state.endAngle * 100) / 100;
+    
+    let diff = state.endAngle - state.startAngle;
+    if (diff < 0) diff += 360;
+    state.sweepAngle = diff;
+    const sweepEl = document.getElementById('sweepAngle');
+    if (sweepEl) sweepEl.value = Math.round(state.sweepAngle * 100) / 100;
+}
+
+// 10진수 도(Degree) -> 도분초(DMS) 변환
+function ddToDms(deg, isLat) {
+    const dir = deg < 0 ? (isLat ? 'S' : 'W') : (isLat ? 'N' : 'E');
+    let d = Math.abs(deg);
+    let degOut = Math.floor(d);
+    let m = (d - degOut) * 60;
+    let minOut = Math.floor(m);
+    let secOut = (m - minOut) * 60;
+    return { d: degOut, m: minOut, s: secOut.toFixed(2), dir: dir };
+}
+
+// 두 좌표 간의 방위각 계산 (True North 기준)
+function calculateBearing(lat1, lon1, lat2, lon2) {
+    const toRad = Math.PI / 180;
+    const toDeg = 180 / Math.PI;
+    const l1 = lat1 * toRad;
+    const l2 = lat2 * toRad;
+    const dl = (lon2 - lon1) * toRad;
+    
+    const y = Math.sin(dl) * Math.cos(l2);
+    const x = Math.cos(l1) * Math.sin(l2) - Math.sin(l1) * Math.cos(l2) * Math.cos(dl);
+    let brng = Math.atan2(y, x) * toDeg;
+    return (brng + 360) % 360;
+}
+
+// 시작점, 거리, 방위각을 통해 도착점 좌표 계산 (핸들 위치용)
+function getDestination(lat, lon, distance, bearing) {
+    const R = 6378137; 
+    const lat1 = lat * Math.PI / 180;
+    const lon1 = lon * Math.PI / 180;
+    const d = distance / R; 
+    const brng = bearing * Math.PI / 180;
+    const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
+    const lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+    return [lat2 * 180 / Math.PI, lon2 * 180 / Math.PI];
+}
+
+// 오프라인 대응 아이콘 스타일 (이미지 없이 CSS로 원 모양 생성)
+const centerIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div style='background-color:#ef4444; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); cursor: grab;'></div>",
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+});
+
+const handleIcon = L.divIcon({
+    className: 'custom-div-icon',
+    html: "<div style='background-color:#3b82f6; width:14px; height:14px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); cursor: grab;'></div>",
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+});
+
+// State 기반으로 지도에 그리기
+function drawOnMap(shouldFitBounds = false) {
+    let eAngle = state.endAngle;
+    if (eAngle < state.startAngle) eAngle += 360;
+    
+    // 1. 부채꼴 다각형
+    const points = generateArcPoints(state.centerLat, state.centerLon, state.radius, state.startAngle, eAngle);
+    const latlngs = points.map(p => [p.lat, p.lon]);
+
+    if (!arcLayer) {
+        arcLayer = L.polygon(latlngs, {
+            color: state.hexColor, weight: 2, fillColor: state.hexColor, fillOpacity: state.opacity / 100
+        }).addTo(map);
+    } else {
+        arcLayer.setLatLngs(latlngs);
+        arcLayer.setStyle({ color: state.hexColor, fillColor: state.hexColor, fillOpacity: state.opacity / 100 });
+    }
+
+    // 1.5. 중심선 (얇은 점선)
+    const midAngle = (state.startAngle + eAngle) / 2;
+    const midPos = getDestination(state.centerLat, state.centerLon, state.radius, midAngle);
+    
+    if (!centerLineLayer) {
+        centerLineLayer = L.polyline([[state.centerLat, state.centerLon], midPos], {
+            color: state.hexColor, weight: 1, dashArray: '5, 5'
+        }).addTo(map);
+    } else {
+        centerLineLayer.setLatLngs([[state.centerLat, state.centerLon], midPos]);
+        centerLineLayer.setStyle({ color: state.hexColor });
+    }
+
+    // 2. 중심점 마커 (드래그 가능)
+    if (!centerMarker) {
+        centerMarker = L.marker([state.centerLat, state.centerLon], {icon: centerIcon, draggable: true}).addTo(map);
+        centerMarker.on('drag', function(e) {
+            state.centerLat = e.latlng.lat;
+            state.centerLon = e.latlng.lng;
+            updateFormFromState();
+            drawOnMap(false); // 드래그 중에는 화면 이동(fitBounds) 안함
+        });
+    } else {
+        centerMarker.setLatLng([state.centerLat, state.centerLon]);
+    }
+
+    // 3. 시작 방위각 & 반경 핸들
+    const startPos = getDestination(state.centerLat, state.centerLon, state.radius, state.startAngle);
+    if (!startHandle) {
+        startHandle = L.marker(startPos, {icon: handleIcon, draggable: true}).addTo(map);
+        startHandle.on('drag', function(e) { handleDrag(e, 'start'); });
+    } else {
+        startHandle.setLatLng(startPos);
+    }
+
+    // 4. 종료 방위각 & 반경 핸들
+    const endPos = getDestination(state.centerLat, state.centerLon, state.radius, state.endAngle);
+    if (!endHandle) {
+        endHandle = L.marker(endPos, {icon: handleIcon, draggable: true}).addTo(map);
+        endHandle.on('drag', function(e) { handleDrag(e, 'end'); });
+    } else {
+        endHandle.setLatLng(endPos);
+    }
+
+    // 화면 크기 맞춤
+    if (shouldFitBounds && latlngs.length > 0) {
+        map.fitBounds(arcLayer.getBounds(), { padding: [40, 40], maxZoom: 14 });
+    }
+}
+
+// 각도 및 반경 핸들 드래그 이벤트 처리
+function handleDrag(e, type) {
+    const lat = e.latlng.lat;
+    const lon = e.latlng.lng;
+    
+    // 핸들과 중심점 간의 거리(미터)를 계산하여 반지름 업데이트
+    state.radius = map.distance([state.centerLat, state.centerLon], [lat, lon]);
+    
+    // 방위각을 계산
+    const newAngle = calculateBearing(state.centerLat, state.centerLon, lat, lon);
+    
+    // 부채꼴의 형태(벌어진 각도)를 유지하면서 전체를 회전시키기 위해 두 각도를 동시에 변경
+    let delta = 0;
+    if (type === 'start') {
+        delta = newAngle - state.startAngle;
+    } else {
+        delta = newAngle - state.endAngle;
+    }
+    
+    // 360도 경계선을 넘을 때 값이 크게 튀는 현상 방지 (-180 ~ 180도로 정규화)
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    
+    state.startAngle = (state.startAngle + delta + 360) % 360;
+    state.endAngle = (state.endAngle + delta + 360) % 360;
+    
+    updateFormFromState();
+    drawOnMap(false);
+}
+
+// 부채꼴 둘레의 점들 계산
+function generateArcPoints(lat, lon, radius, startAngle, endAngle) {
+    const R = 6378137; 
+    const lat1 = lat * Math.PI / 180;
+    const lon1 = lon * Math.PI / 180;
+    const d = radius / R; 
+
+    const points = [];
+    points.push({lat: lat, lon: lon});
+
+    const step = 1; 
+    for (let angle = startAngle; angle <= endAngle; angle += step) {
+        const brng = angle * Math.PI / 180;
+        const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
+        const lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+        points.push({ lat: lat2 * 180 / Math.PI, lon: lon2 * 180 / Math.PI });
+    }
+
+    if ((endAngle - startAngle) % step !== 0) {
+        const brng = endAngle * Math.PI / 180;
+        const lat2 = Math.asin(Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brng));
+        const lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat1), Math.cos(d) - Math.sin(lat1) * Math.sin(lat2));
+        points.push({ lat: lat2 * 180 / Math.PI, lon: lon2 * 180 / Math.PI });
+    }
+
+    points.push({lat: lat, lon: lon});
+    return points;
+}
+
+// KML 문자열 조립
+function generateKML(name, points, hexColor, opacity, centerPos, midPos) {
+    const r = hexColor.substring(1, 3);
+    const g = hexColor.substring(3, 5);
+    const b = hexColor.substring(5, 7);
+    
+    const alphaHex = Math.round((opacity / 100) * 255).toString(16).padStart(2, '0').toUpperCase();
+    const kmlColor = `${alphaHex}${b}${g}${r}`.toLowerCase();
+    const lineColor = `ff${b}${g}${r}`.toLowerCase();
+    
+    const coordsStr = points.map(p => `${p.lon},${p.lat},0`).join(' ');
+
+    let centerLineKml = '';
+    if (centerPos && midPos) {
+        centerLineKml = `
+    <Placemark>
+      <name>${name}_centerline</name>
+      <Style>
+        <LineStyle>
+          <color>${lineColor}</color>
+          <width>1</width>
+        </LineStyle>
+      </Style>
+      <LineString>
+        <extrude>0</extrude>
+        <altitudeMode>clampToGround</altitudeMode>
+        <coordinates>
+          ${centerPos.lon},${centerPos.lat},0 ${midPos.lon},${midPos.lat},0
+        </coordinates>
+      </LineString>
+    </Placemark>`;
+    }
+
+    let markersKml = '';
+    state.customMarkers.forEach((m, idx) => {
+        markersKml += `
+    <Placemark>
+      <name>마커 ${idx + 1}</name>
+      <Point>
+        <coordinates>${m.lon},${m.lat},0</coordinates>
+      </Point>
+    </Placemark>`;
+    });
+
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>${name}.kml</name>
+    <Style id="sectorStyle">
+      <LineStyle>
+        <color>${lineColor}</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>${kmlColor}</color>
+        <fill>1</fill>
+        <outline>1</outline>
+      </PolyStyle>
+    </Style>
+    <Placemark>
+      <name>${name}</name>
+      <styleUrl>#sectorStyle</styleUrl>
+      <Polygon>
+        <extrude>0</extrude>
+        <altitudeMode>clampToGround</altitudeMode>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+              ${coordsStr}
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>${centerLineKml}${markersKml}
+  </Document>
+</kml>`;
+}
+
+// 다운로드 기능
+function downloadKML(filename, content) {
+    const blob = new Blob([content], { type: 'application/vnd.google-earth.kml+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.kml`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// ----------------------------------------------------
+// 커스텀 마커 로직
+// ----------------------------------------------------
+let markerLayerGroup = null;
+
+function addCustomMarker(lat, lon) {
+    const id = Date.now().toString();
+    state.customMarkers.push({ id, lat, lon });
+    
+    // 마커가 추가되면 강제로 '보이기' 상태로 전환
+    if (!state.showMarkers) {
+        state.showMarkers = true;
+        const toggle = document.getElementById('markerVisibilityToggle');
+        if (toggle) toggle.checked = true;
+    }
+    
+    syncMarkerMap();
+    renderMarkerList();
+}
+
+function removeCustomMarker(id) {
+    state.customMarkers = state.customMarkers.filter(m => m.id !== id);
+    syncMarkerMap();
+    renderMarkerList();
+}
+
+function updateCustomMarker(id, lat, lon) {
+    const marker = state.customMarkers.find(m => m.id === id);
+    if (marker) {
+        marker.lat = lat;
+        marker.lon = lon;
+        syncMarkerMap();
+    }
+}
+
+function syncMarkerMap() {
+    if (!markerLayerGroup) {
+        markerLayerGroup = L.layerGroup().addTo(map);
+    } else {
+        markerLayerGroup.clearLayers();
+    }
+
+    if (!state.showMarkers) return; // 숨김 상태면 마커를 다시 그리지 않음
+
+    state.customMarkers.forEach((m, index) => {
+        // 숫자가 커져도 원형 밖으로 튀어나가지 않도록 디자인 개선 (width: auto, padding)
+        const iconHtml = `<div style="background-color:var(--accent-color); color:white; min-width:24px; height:24px; padding:0 4px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px; border:2px solid white; box-shadow:0 2px 5px rgba(0,0,0,0.5); white-space:nowrap;">${index + 1}</div>`;
+        const divIcon = L.divIcon({
+            html: iconHtml,
+            className: '',
+            iconSize: null, // 내용에 맞게 자동 조절
+            iconAnchor: [12, 12]
+        });
+        
+        const marker = L.marker([m.lat, m.lon], { icon: divIcon }).addTo(markerLayerGroup);
+        // 마커 클릭 시 지도로 클릭 이벤트가 전파되어 "중심점 이동" 경고가 뜨는 것을 방지
+        marker.on('click', (e) => {
+            L.DomEvent.stopPropagation(e);
+        });
+    });
+}
+
+function renderMarkerList() {
+    const listEl = document.getElementById('markerList');
+    if (!listEl) return;
+    
+    listEl.innerHTML = '';
+    state.customMarkers.forEach((m, index) => {
+        const item = document.createElement('div');
+        item.className = 'marker-item';
+        item.style.flexDirection = 'column';
+        item.style.alignItems = 'flex-start';
+
+        const latDms = ddToDms(m.lat, true);
+        const lonDms = ddToDms(m.lon, false);
+
+        item.innerHTML = `
+            <div style="display:flex; width:100%; justify-content:space-between; align-items:center;">
+                <span class="marker-num">${index + 1}</span>
+                <button type="button" class="remove-btn" data-id="${m.id}" title="마커 삭제">&times;</button>
+            </div>
+            <div class="dms-inputs" style="width:100%; margin-top:0.3rem;">
+                <span style="font-size:0.75rem; width:20px;">위도</span>
+                <input type="number" class="marker-dms-edit m-lat-d" value="${latDms.d}" min="0" max="90" data-id="${m.id}"><span>°</span>
+                <input type="number" class="marker-dms-edit m-lat-m" value="${latDms.m}" min="0" max="59" data-id="${m.id}"><span>'</span>
+                <input type="number" class="marker-dms-edit m-lat-s" value="${latDms.s}" min="0" max="59.99" step="0.01" data-id="${m.id}"><span>"</span>
+                <select class="marker-dms-edit m-lat-dir" data-id="${m.id}" style="font-size:0.75rem; padding:0.2rem;">
+                    <option value="N" ${latDms.dir === 'N' ? 'selected' : ''}>N</option>
+                    <option value="S" ${latDms.dir === 'S' ? 'selected' : ''}>S</option>
+                </select>
+            </div>
+            <div class="dms-inputs" style="width:100%; margin-top:0.3rem;">
+                <span style="font-size:0.75rem; width:20px;">경도</span>
+                <input type="number" class="marker-dms-edit m-lon-d" value="${lonDms.d}" min="0" max="180" data-id="${m.id}"><span>°</span>
+                <input type="number" class="marker-dms-edit m-lon-m" value="${lonDms.m}" min="0" max="59" data-id="${m.id}"><span>'</span>
+                <input type="number" class="marker-dms-edit m-lon-s" value="${lonDms.s}" min="0" max="59.99" step="0.01" data-id="${m.id}"><span>"</span>
+                <select class="marker-dms-edit m-lon-dir" data-id="${m.id}" style="font-size:0.75rem; padding:0.2rem;">
+                    <option value="E" ${lonDms.dir === 'E' ? 'selected' : ''}>E</option>
+                    <option value="W" ${lonDms.dir === 'W' ? 'selected' : ''}>W</option>
+                </select>
+            </div>
+        `;
+        listEl.appendChild(item);
+    });
+
+    // 이벤트 바인딩
+    listEl.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => removeCustomMarker(e.target.dataset.id));
+    });
+
+    listEl.querySelectorAll('.marker-dms-edit').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const id = e.target.dataset.id;
+            const parent = e.target.closest('.marker-item');
+            
+            const latD = parseFloat(parent.querySelector('.m-lat-d').value) || 0;
+            const latM = parseFloat(parent.querySelector('.m-lat-m').value) || 0;
+            const latS = parseFloat(parent.querySelector('.m-lat-s').value) || 0;
+            const latDir = parent.querySelector('.m-lat-dir').value;
+            let lat = latD + (latM / 60) + (latS / 3600);
+            if (latDir === 'S') lat = -lat;
+
+            const lonD = parseFloat(parent.querySelector('.m-lon-d').value) || 0;
+            const lonM = parseFloat(parent.querySelector('.m-lon-m').value) || 0;
+            const lonS = parseFloat(parent.querySelector('.m-lon-s').value) || 0;
+            const lonDir = parent.querySelector('.m-lon-dir').value;
+            let lon = lonD + (lonM / 60) + (lonS / 3600);
+            if (lonDir === 'W') lon = -lon;
+
+            if (!isNaN(lat) && !isNaN(lon)) {
+                updateCustomMarker(id, lat, lon);
+            }
+        });
+    });
+}
+
+</script>
+</body>
+
+</html>
