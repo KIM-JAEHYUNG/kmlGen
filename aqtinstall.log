@@ -1,0 +1,11 @@
+2026-07-05 22:21:51,715 - aqt.helper - DEBUG - helper 8352313472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_qt6_680/Updates.xml.sha256
+2026-07-05 22:21:53,417 - aqt.helper - DEBUG - helper 8352313472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_qt6_680/Updates.xml.sha256
+2026-07-05 22:21:55,717 - aqt.helper - DEBUG - helper 8352313472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_qt6_680/Updates.xml.sha256
+2026-07-05 22:21:57,084 - aqt.helper - DEBUG - helper 8352313472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_qt6_680/Updates.xml.sha256
+2026-07-05 22:21:59,872 - aqt.helper - DEBUG - helper 8352313472 Attempt to download checksum at https://download.qt.io/online/qtsdkrepository/windows_x86/desktop/tools_qt6_680/Updates.xml.sha256
+2026-07-05 22:22:01,251 - aqt.main - ERROR - installer 8352313472 Failed to download checksum for the file 'Updates.xml' from mirrors '['https://download.qt.io']
+==============================Suggested follow-up:==============================
+* Check your internet connection
+* Consider modifying `requests.max_retries_to_retrieve_hash` in settings.ini
+* Consider modifying `mirrors.trusted_mirrors` in settings.ini (see https://aqtinstall.readthedocs.io/en/stable/configuration.html#configuration)
+* Please use 'aqt list-tool windows desktop' to check what tools are available.
